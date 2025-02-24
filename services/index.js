@@ -1,3 +1,6 @@
 module.exports.CityServices = require('./city.services')
 module.exports.areaService = require('./area.services')
 module.exports.userService = require('./user.services')
+module.exports.categoryService = require('./category.services')
+module.exports.subscriptionService = require('./emailSub.services')
+module.exports.feedbackService = require('./feedback.services')

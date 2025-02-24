@@ -1,3 +1,7 @@
 module.exports.CitySchema = require('./city.model')
 module.exports.AreaSchema = require('./area.model')
 module.exports.UserSchema = require('./user.model')
+module.exports.CategorySchema = require('./category.model')
+module.exports.VehicleSchema = require('./vehicle.model')
+module.exports.emailSubSchema = require('./emailSub.model')
+module.exports.Feedback = require('./feedback.model')
