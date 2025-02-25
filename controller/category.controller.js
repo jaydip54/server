@@ -5,8 +5,12 @@ const { categoryService } = require("../services");
 const createCategory = async (req, res) => {
     try {
         const { Status, Name } = req.body
-        if (Status || Name) {
-            throw new Error("Entre REqiore Field");
+        if (!Status || !Name) {
+            throw new Error("Entre Require Field");
+        }
+        const Exist = await categoryService.findbynameOne(Name)
+        if (Exist) {
+            return res.status(400).json({ success: false, message: "Category already exist" });
         }
         const category = await categoryService.createCategory(req.body);
         res.status(201).json({ success: true, message: "Category created successfully", category });
@@ -19,7 +23,7 @@ const createCategory = async (req, res) => {
 const getAllCategories = async (req, res) => {
     try {
         const categories = await categoryService.getAllCategories();
-        if (categories) {
+        if (!categories) {
             throw new Error("Failed Fetch Data");
 
         }
@@ -45,8 +49,13 @@ const getCategoryById = async (req, res) => {
 // Update a category
 const updateCategory = async (req, res) => {
     try {
-        if (Status || Name) {
-            throw new Error("Entre REqiore Field");
+        const { Status, Name } = req.body
+        if (!Status || !Name) {
+            throw new Error("Entre Require Field");
+        }
+        const Exist = await categoryService.findbynameOne(Name)
+        if (Exist && Exist._id !== req.params.id) {
+            return res.status(400).json({ success: false, message: "Category already exist" });
         }
         const updatedCategory = await categoryService.updateCategory(req.params.id, req.body);
         if (!updatedCategory) {
@@ -54,7 +63,7 @@ const updateCategory = async (req, res) => {
         }
         res.status(200).json({ success: true, message: "Category updated successfully", updatedCategory });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Error updating category", error });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 

@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { UserSchema } = require("../model");
-const { userService } = require("../services");
+const { userService, loginHistoryService } = require("../services");
 require("dotenv").config();
 
 // JWT Secret Key
@@ -36,9 +36,8 @@ const login = async (req, res) => {
 
         // Generate token
         const token = Create_Token(user);
-
+        await loginHistoryService.createLoginHistory({ user: user._id })
         res.status(200).json({ status: true, message: "Login successful", token, type: user.type });
-
     } catch (error) {
         res.status(500).json({ status: false, message: error.message });
     }

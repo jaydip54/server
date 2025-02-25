@@ -18,6 +18,11 @@ const getCategoryById = (id) => {
 
 };
 
+//findbynameOne category
+const findbynameOne = (name) => {
+    return CategorySchema.findOne({ Name: name });
+}
+
 // Update a category
 const updateCategory = (id, data) => {
 
@@ -39,4 +44,5 @@ module.exports = {
     getCategoryById,
     updateCategory,
     deleteCategory,
+    findbynameOne
 };
