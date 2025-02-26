@@ -1,15 +1,10 @@
-const Package = require("../models/Package");
+const { Package } = require("../model");
+
 
 // Create Package
 const createPackage = async (data) => {
   try {
-    const newPackage = new Package({
-      name: data.name,
-      amount: data.amount,
-      duration: data.duration,
-    });
-
-    return await newPackage.save();
+    return await Package.create(data);
   } catch (error) {
     throw error;
   }
@@ -23,7 +18,7 @@ const getAllPackages = async () => {
     throw error;
   }
 };
-
+//login get all
 // Get Package by ID
 const getPackageById = async (id) => {
   try {

@@ -5,14 +5,15 @@ const bcrypt = require("bcryptjs");
 const createUser = async (req, res) => {
     try {
         const { ctid, areaid, name, gender, contact, emailed, pwd, sq, sa, type, propic } = req.body;
+        console.log("🚀 ~ createUser ~ ctid:", ctid)
 
-        // Validate MongoDB ObjectIds
-        if (!mongoose.Types.ObjectId.isValid(ctid)) {
-            return res.status(400).json({ status: "error", message: "Invalid City ID" });
-        }
-        if (!mongoose.Types.ObjectId.isValid(areaid)) {
-            return res.status(400).json({ status: "error", message: "Invalid Area ID" });
-        }
+        // // Validate MongoDB ObjectIds
+        // if (!mongoose.Types.ObjectId.isValid(ctid)) {
+        //     return res.status(400).json({ status: "error", message: "Invalid City ID" });
+        // }
+        // if (!mongoose.Types.ObjectId.isValid(areaid)) {
+        //     return res.status(400).json({ status: "error", message: "Invalid Area ID" });
+        // }
 
         // Check if city exists
         const cityExists = await CityServices.getCityById(ctid);

@@ -9,7 +9,7 @@ const createFeedback = (data) => {
 // Get all feedbacks
 const getAllFeedbacks = async () => {
     try {
-        return await Feedback.find();
+        return await Feedback.find().populate('Username')
     } catch (error) {
         throw error;
     }
@@ -27,7 +27,7 @@ const getFeedbackById = async (id) => {
 // Update feedback
 const updateFeedback = async (id, data) => {
     try {
-        return await Feedback.findByIdAndUpdate(id, data, { new: true });
+        return await Feedback.findByIdAndUpdate(id, data, { new: true })
     } catch (error) {
         throw error;
     }

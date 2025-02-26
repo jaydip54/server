@@ -1,0 +1,134 @@
+const mongoose = require("mongoose");
+
+const LoginBlockSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, unique: true },
+    blockedAt: { type: Date, default: Date.now },
+    reason: { type: String, default: "Too many failed login attempts" },
+    isBlocked: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("LoginBlock", LoginBlockSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+const LoginBlock = require("../models/LoginBlock");
+
+// Block a user
+const blockUser = async (data) => {
+  return await LoginBlock.create(data);
+};
+
+// Get all blocked users
+const getAllBlockedUsers = async () => {
+  return await LoginBlock.find().populate("user");
+};
+
+// Get a specific blocked user by ID
+const getBlockedUserById = async (id) => {
+  return await LoginBlock.findOne({ user: id }).populate("user");
+};
+
+// Unblock a user
+const unblockUser = async (id) => {
+  return await LoginBlock.findOneAndDelete({ user: id });
+};
+
+module.exports = {
+  blockUser,
+  getAllBlockedUsers,
+  getBlockedUserById,
+  unblockUser,
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+const loginBlockService = require("../services/loginBlockService");
+
+// Block a user
+const blockUser = async (req, res) => {
+  try {
+    const blockedUser = await loginBlockService.blockUser(req.body);
+    res.status(201).json(blockedUser);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Get all blocked users
+const getAllBlockedUsers = async (req, res) => {
+  try {
+    const blockedUsers = await loginBlockService.getAllBlockedUsers();
+    res.status(200).json(blockedUsers);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get a blocked user by ID
+const getBlockedUserById = async (req, res) => {
+  try {
+    const blockedUser = await loginBlockService.getBlockedUserById(req.params.id);
+    if (!blockedUser) return res.status(404).json({ message: "User not blocked" });
+    res.status(200).json(blockedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Unblock a user
+const unblockUser = async (req, res) => {
+  try {
+    const unblocked = await loginBlockService.unblockUser(req.params.id);
+    if (!unblocked) return res.status(404).json({ message: "User not found in block list" });
+    res.status(200).json({ message: "User unblocked successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  blockUser,
+  getAllBlockedUsers,
+  getBlockedUserById,
+  unblockUser,
+};
+
+
+
+
+
+
+
+const express = require("express");
+const router = express.Router();
+const loginBlockController = require("../controllers/loginBlockController");
+
+router.post("/", loginBlockController.blockUser);
+router.get("/", loginBlockController.getAllBlockedUsers);
+router.get("/:id", loginBlockController.getBlockedUserById);
+router.delete("/:id", loginBlockController.unblockUser);
+
+module.exports = router;

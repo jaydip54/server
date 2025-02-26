@@ -1,0 +1,148 @@
+const mongoose = require("mongoose");
+
+const BillSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    businessRegisterPlace: { type: mongoose.Schema.Types.ObjectId, ref: "BusinessPlace", required: true },
+    vehicle: { type: mongoose.Schema.Types.ObjectId, ref: "VehicleModel", required: true },
+    finalPayment: { type: Number, required: true },
+    billDate: { type: Date, default: Date.now, required: true },
+    paymentMode: { 
+      type: String, 
+      enum: ["Cash", "Card", "UPI", "Bank Transfer"], 
+      required: true 
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Bill", BillSchema);
+
+
+
+
+
+const Bill = require("../models/Bill");
+
+// Create a new bill
+const createBill = async (data) => {
+  return await Bill.create(data);
+};
+
+// Get all bills
+const getAllBills = async () => {
+  return await Bill.find().populate(["user", "businessRegisterPlace", "vehicle"]);
+};
+
+// Get a specific bill by ID
+const getBillById = async (id) => {
+  return await Bill.findById(id).populate(["user", "businessRegisterPlace", "vehicle"]);
+};
+
+// Update a bill
+const updateBill = async (id, data) => {
+  return await Bill.findByIdAndUpdate(id, data, { new: true });
+};
+
+// Delete a bill
+const deleteBill = async (id) => {
+  return await Bill.findByIdAndDelete(id);
+};
+
+module.exports = {
+  createBill,
+  getAllBills,
+  getBillById,
+  updateBill,
+  deleteBill,
+};
+
+
+
+
+
+
+
+
+const billService = require("../services/billService");
+
+// Create a new bill
+const createBill = async (req, res) => {
+  try {
+    const bill = await billService.createBill(req.body);
+    res.status(201).json(bill);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Get all bills
+const getAllBills = async (req, res) => {
+  try {
+    const bills = await billService.getAllBills();
+    res.status(200).json(bills);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get a specific bill by ID
+const getBillById = async (req, res) => {
+  try {
+    const bill = await billService.getBillById(req.params.id);
+    if (!bill) return res.status(404).json({ message: "Bill not found" });
+    res.status(200).json(bill);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update a bill
+const updateBill = async (req, res) => {
+  try {
+    const updatedBill = await billService.updateBill(req.params.id, req.body);
+    if (!updatedBill) return res.status(404).json({ message: "Bill not found" });
+    res.status(200).json(updatedBill);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Delete a bill
+const deleteBill = async (req, res) => {
+  try {
+    const deletedBill = await billService.deleteBill(req.params.id);
+    if (!deletedBill) return res.status(404).json({ message: "Bill not found" });
+    res.status(200).json({ message: "Bill deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  createBill,
+  getAllBills,
+  getBillById,
+  updateBill,
+  deleteBill,
+};
+
+
+
+
+
+
+const express = require("express");
+const router = express.Router();
+const billController = require("../controllers/billController");
+
+router.post("/", billController.createBill);
+router.get("/", billController.getAllBills);
+router.get("/:id", billController.getBillById);
+router.put("/:id", billController.updateBill);
+router.delete("/:id", billController.deleteBill);
+
+module.exports = router;
+
+
+

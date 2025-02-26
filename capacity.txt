@@ -1,0 +1,139 @@
+const mongoose = require("mongoose");
+
+const CapacitySchema = new mongoose.Schema(
+  {
+    registerPlaceId: { type: mongoose.Schema.Types.ObjectId, ref: "BusinessPlace", required: true },
+    parkingPlaceId: { type: mongoose.Schema.Types.ObjectId, ref: "ParkingSpace", required: true },
+    vehicleModelId: { type: mongoose.Schema.Types.ObjectId, ref: "VehicleModel", required: true },
+    capacity: { type: Number, required: true },
+    rate: { type: Number, required: true },
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Capacity", CapacitySchema);
+
+
+
+const Capacity = require("../models/Capacity");
+
+// Create a new capacity entry
+const createCapacity = async (data) => {
+  return await Capacity.create(data);
+};
+
+// Get all capacity records
+const getAllCapacities = async () => {
+  return await Capacity.find().populate(["registerPlaceId", "parkingPlaceId", "vehicleModelId"]);
+};
+
+// Get a specific capacity record by ID
+const getCapacityById = async (id) => {
+  return await Capacity.findById(id).populate(["registerPlaceId", "parkingPlaceId", "vehicleModelId"]);
+};
+
+// Update a capacity record
+const updateCapacity = async (id, data) => {
+  return await Capacity.findByIdAndUpdate(id, data, { new: true });
+};
+
+// Delete a capacity record
+const deleteCapacity = async (id) => {
+  return await Capacity.findByIdAndDelete(id);
+};
+
+module.exports = {
+  createCapacity,
+  getAllCapacities,
+  getCapacityById,
+  updateCapacity,
+  deleteCapacity,
+};
+
+
+
+
+
+
+
+
+const capacityService = require("../services/capacityService");
+
+// Create a new capacity entry
+const createCapacity = async (req, res) => {
+  try {
+    const capacity = await capacityService.createCapacity(req.body);
+    res.status(201).json(capacity);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Get all capacity records
+const getAllCapacities = async (req, res) => {
+  try {
+    const capacities = await capacityService.getAllCapacities();
+    res.status(200).json(capacities);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get a specific capacity record by ID
+const getCapacityById = async (req, res) => {
+  try {
+    const capacity = await capacityService.getCapacityById(req.params.id);
+    if (!capacity) return res.status(404).json({ message: "Capacity record not found" });
+    res.status(200).json(capacity);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update a capacity record
+const updateCapacity = async (req, res) => {
+  try {
+    const updatedCapacity = await capacityService.updateCapacity(req.params.id, req.body);
+    if (!updatedCapacity) return res.status(404).json({ message: "Capacity record not found" });
+    res.status(200).json(updatedCapacity);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Delete a capacity record
+const deleteCapacity = async (req, res) => {
+  try {
+    const deletedCapacity = await capacityService.deleteCapacity(req.params.id);
+    if (!deletedCapacity) return res.status(404).json({ message: "Capacity record not found" });
+    res.status(200).json({ message: "Capacity record deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  createCapacity,
+  getAllCapacities,
+  getCapacityById,
+  updateCapacity,
+  deleteCapacity,
+};
+
+
+
+
+
+
+
+const express = require("express");
+const router = express.Router();
+const capacityController = require("../controllers/capacityController");
+
+router.post("/", capacityController.createCapacity);
+router.get("/", capacityController.getAllCapacities);
+router.get("/:id", capacityController.getCapacityById);
+router.put("/:id", capacityController.updateCapacity);
+router.delete("/:id", capacityController.deleteCapacity);
+
+module.exports = router;

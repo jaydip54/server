@@ -18,7 +18,7 @@ const getAllLoginHistory = async (req, res) => {
 // Get login record by Lhid
 const getLoginHistoryById = async (req, res) => {
     try {
-        const login = await loginHistoryService.getLoginHistoryById(req.params.id);
+        const login = await loginHistoryService.getLoginHistoryUserById(req.params.id);
         if (!login) {
             return res.status(404).json({ success: false, message: "Login record not found" });
         }

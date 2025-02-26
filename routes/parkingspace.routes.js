@@ -1,6 +1,6 @@
 const express = require("express");
+const { parkingSpaceController } = require("../controller");
 const router = express.Router();
-const parkingSpaceController = require("../controllers/parkingSpaceController");
 
 // Create a new parking space
 router.post("/", parkingSpaceController.createParkingSpace);

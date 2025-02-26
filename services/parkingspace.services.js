@@ -1,13 +1,10 @@
-const ParkingSpace = require("../models/ParkingSpace");
+const { ParkingSpace } = require("../model");
+
 
 // Create a new parking space
 const createParkingSpace = async (data) => {
   try {
-    const lastRecord = await ParkingSpace.findOne().sort({ Pspaceid: -1 });
-    const nextId = lastRecord ? lastRecord.Pspaceid + 1 : 1;
-
-    const newSpace = new ParkingSpace({ Pspaceid: nextId, Name: data.Name });
-    return await newSpace.save();
+    return await ParkingSpace.create(data);
   } catch (error) {
     throw error;
   }
@@ -25,7 +22,7 @@ const getAllParkingSpaces = async () => {
 // Get parking space by ID
 const getParkingSpaceById = async (id) => {
   try {
-    return await ParkingSpace.findOne({ Pspaceid: id });
+    return await ParkingSpace.findById(id);
   } catch (error) {
     throw error;
   }
@@ -34,7 +31,7 @@ const getParkingSpaceById = async (id) => {
 // Update parking space
 const updateParkingSpace = async (id, data) => {
   try {
-    return await ParkingSpace.findOneAndUpdate({ Pspaceid: id }, data, { new: true });
+    return await ParkingSpace.findByIdAndUpdate(id, data, { new: true });
   } catch (error) {
     throw error;
   }
@@ -43,7 +40,7 @@ const updateParkingSpace = async (id, data) => {
 // Delete parking space
 const deleteParkingSpace = async (id) => {
   try {
-    return await ParkingSpace.findOneAndDelete({ Pspaceid: id });
+    return await ParkingSpace.findByIdAndDelete(id);
   } catch (error) {
     throw error;
   }

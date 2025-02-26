@@ -1,9 +1,15 @@
-const packageService = require("../services/packageService");
+const { packageService } = require("../services");
+
+
 
 // Create Package
 const createPackage = async (req, res) => {
   try {
     const newPackage = await packageService.createPackage(req.body);
+    if (!newPackage) {
+      throw new Error("Failed carete package");
+
+    }
     res.status(201).json({ success: true, data: newPackage });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -19,6 +25,8 @@ const getAllPackages = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 
 // Get Package by ID
 const getPackageById = async (req, res) => {

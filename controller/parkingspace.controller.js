@@ -1,4 +1,5 @@
-const parkingSpaceService = require("../services/parkingSpaceService");
+const { parkingSpaceService } = require("../services");
+
 
 // Create a new parking space
 const createParkingSpace = async (req, res) => {

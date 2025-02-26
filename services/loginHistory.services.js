@@ -14,8 +14,8 @@ const getAllLoginHistory = () => {
 };
 
 // Get login record by Lhid
-const getLoginHistoryById = async (id) => {
-    return LoginHistory.findById(id).populate('user')
+const getLoginHistoryUserById = async (id) => {
+    return LoginHistory.find({ user: id }).populate('user')
 };
 
 // Get login history for a specific user (Uid)
@@ -35,7 +35,7 @@ const deleteLoginHistory = (id) => {
 module.exports = {
     createLoginHistory,
     getAllLoginHistory,
-    getLoginHistoryById,
+    getLoginHistoryUserById,
     getLoginHistoryByUserId,
     deleteLoginHistory,
 };

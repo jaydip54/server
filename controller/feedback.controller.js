@@ -4,7 +4,8 @@ const { feedbackService } = require("../services");
 // Create feedback
 const createFeedback = async (req, res) => {
     try {
-        const feedback = await feedbackService.createFeedback(req.body);
+        const user = req.user._id
+        const feedback = await feedbackService.createFeedback({ Msg: req.body.Msg, Username: user });
         res.status(201).json({ success: true, message: "Feedback submitted", feedback });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error submitting feedback", error: error.message });
