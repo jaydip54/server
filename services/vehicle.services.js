@@ -6,9 +6,9 @@ const create = (data) => {
     return VehicleSchema.create(data);
 };
 
-const findOne = (cityName) => {
+const findOne = (vehicle) => {
     // console.log("🚀 ~ findOne ~ cityName:", cityName)
-    return VehicleSchema.findOne({ name: cityName });
+    return VehicleSchema.findOne({ name: vehicle });
 };
 
 const update = (id, data) => {

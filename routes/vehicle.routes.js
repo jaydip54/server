@@ -1,12 +1,12 @@
 const express = require("express");
-const { CityController } = require("../controller");
+const { VehicleController } = require("../controller");
 
 const router = express.Router();
 
-router.post("/", VehicleController.createCity);
-router.get("/", VehicleController.getCities);
-router.get("/:id", VehicleController.getCityById);
-router.put("/:id", VehicleController.updateCity);
-router.delete("/:id", VehicleController.deleteCity);
+router.post("/", VehicleController.createVehicle);
+router.get("/", VehicleController.getVehicles);
+router.get("/:id", VehicleController.getVehicleById);
+router.put("/:id", VehicleController.updateVehicle);
+router.delete("/:id", VehicleController.deleteVehicle);
 
 module.exports = router;

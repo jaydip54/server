@@ -13,7 +13,7 @@ const BusinessPlaceSchema = new mongoose.Schema(
         location: { type: String, required: true },
         contact: { type: String, required: true, unique: true },
         over: { type: Boolean, default: false },
-        activeStatus: { type: Boolean, default: true },
+        activeStatus: { type: Boolean, default: true }, 
         activeDate: { type: Date, default: Date.now },
         deactiveDate: { type: Date },
     },

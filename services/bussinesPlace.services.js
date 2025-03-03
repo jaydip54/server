@@ -1,27 +1,47 @@
-const BusinessPlace = require("../models/BusinessPlace");
+const { BusinessPlace } = require("../model");
 
-class BusinessPlaceService {
-  async registerPlace(placeData) {
-    return await BusinessPlace.create(placeData);
-  }
+const registerPlace = async (placeData) => {
+  return await BusinessPlace.create(placeData);
+};
 
-  async getAllPlaces() {
-    return await BusinessPlace.find()
-      .populate(["user", "city", "areaId", "categoryId", "packageId"]);
-  }
+const getAllPlaces = async () => {
+  return await BusinessPlace.find().populate([
+    "user",
+    "city",
+    "areaId",
+    "categoryId",
+    "packageId",
+  ]);
+};
 
-  async getPlaceById(placeId) {
-    return await BusinessPlace.findById(placeId)
-      .populate(["user", "city", "areaId", "categoryId", "packageId"]);
-  }
+const getPlaceById = async (placeId) => {
+  return await BusinessPlace.findById(placeId).populate([
+    "user",
+    "city",
+    "areaId",
+    "categoryId",
+    "packageId",
+  ]);
+};
 
-  async updatePlace(placeId, placeData) {
-    return await BusinessPlace.findByIdAndUpdate(placeId, placeData, { new: true });
-  }
+const updatePlace = async (placeId, placeData) => {
+  return await BusinessPlace.findByIdAndUpdate(placeId, placeData, { new: true }).populate([
+    "user",
+    "city",
+    "areaId",
+    "categoryId",
+    "packageId",
+  ]);
+};
 
-  async deletePlace(placeId) {
-    return await BusinessPlace.findByIdAndDelete(placeId);
-  }
-}
+const deletePlace = async (placeId) => {
+  return await BusinessPlace.findByIdAndDelete(placeId);
+};
 
-module.exports = new BusinessPlaceService();
+module.exports = {
+  registerPlace,
+  getAllPlaces,
+  getPlaceById,
+  updatePlace,
+  deletePlace,
+};
