@@ -1,5 +1,6 @@
 const { check, validationResult } = require("express-validator");
 const { businessPlaceService } = require("../services");
+const businessPlaceModel = require("../model/businessPlace.model");
 
 // Validation rules for creating/updating a business place
 const validateBusinessPlace = [
@@ -34,6 +35,20 @@ const registerPlace = async (req, res) => {
   }
 };
 
+
+//login a business place 
+const getAllLoginUserPlaces = async (req, res) => {
+  try {
+    const user = req.user._id
+    const places = await businessPlaceModel.find({ user: user })
+    res.status(201).json({
+      message: "Business place get successfully",
+      data: places
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // Get all business places
 const getAllPlaces = async (req, res) => {
   try {
@@ -106,4 +121,5 @@ module.exports = {
   updatePlace,
   deletePlace,
   validateBusinessPlace,
+  getAllLoginUserPlaces
 };

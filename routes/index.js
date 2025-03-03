@@ -37,10 +37,12 @@ routes.use('/pspace', pspaceRoutes)
 routes.use('/vehicle', isLogin, isRestrict([0, 1, 2]), vehicleRoutes)
 routes.use('/bussinesPlace', isLogin, isRestrict([0, 1, 2]), bussinesPlaceRegister)
 
-routes.use('/assign', isLogin, isRestrict([0, 1, 2]), assign)
+// routes.use('/assign', isLogin, isRestrict([0, 1, 2]), assign)
+routes.use('/book', isLogin, isRestrict([0, 1, 2]), booking)
+
 routes.use('/capacity', isLogin, isRestrict([0, 1, 2]), capacity)
 routes.use('/bank', isLogin, bankRoutes)
-routes.use('/book', isLogin, isRestrict([0, 1, 2]), booking)
+
 routes.use('/bill', isLogin, isRestrict([0, 1, 2]), bill)
 routes.use('/cancel', isLogin, isRestrict([0, 1, 2]), cancelBokking)
 routes.use('/rating', isLogin, isRestrict([0, 1, 2]), ratingRoutes)

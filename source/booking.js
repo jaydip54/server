@@ -11,7 +11,7 @@ const BookParkingSchema = new mongoose.Schema(
     {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         businessRegisterPlace: { type: mongoose.Schema.Types.ObjectId, ref: "BusinessPlace", required: true },
-        parkingSpace: { type: mongoose.Schema.Types.ObjectId, ref: "ParkingSpace", required: true },
+        // parkingSpace: { type: mongoose.Schema.Types.ObjectId, ref: "ParkingSpace", required: true },
         vehicle: { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle", required: true },
         bookingDate: { type: Date, default: Date.now, required: true },
         placeNo: { type: String, required: true },

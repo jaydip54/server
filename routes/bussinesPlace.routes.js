@@ -9,6 +9,7 @@ router.post(
 );
 
 router.get("/", businessPlaceController.getAllPlaces);
+router.get("/login", businessPlaceController.getAllLoginUserPlaces);
 
 router.get("/:id", businessPlaceController.getPlaceById);
 
