@@ -8,11 +8,8 @@ const router = express.Router();
 const CancelBookingSchema = new mongoose.Schema(
     {
         booking: { type: mongoose.Schema.Types.ObjectId, ref: "BookParking", required: true },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         cancelDate: { type: Date, default: Date.now, required: true },
         reason: { type: String, required: true },
-        refundAmount: { type: Number, default: 0 },
-        status: { type: String, enum: ["Pending", "Refunded", "Rejected"], default: "Pending" },
     },
     { timestamps: true }
 );

@@ -11,10 +11,9 @@ const BookParkingSchema = new mongoose.Schema(
     {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
         businessRegisterPlace: { type: mongoose.Schema.Types.ObjectId, ref: "BusinessPlace", required: true },
-        // parkingSpace: { type: mongoose.Schema.Types.ObjectId, ref: "ParkingSpace", required: true },
+        parkingSpace: { type: mongoose.Schema.Types.ObjectId, ref: "ParkingSpace", required: true },
         vehicle: { type: mongoose.Schema.Types.ObjectId, ref: "Vehicle", required: true },
         bookingDate: { type: Date, default: Date.now, required: true },
-        placeNo: { type: String, required: true },
         amt: { type: Number, required: true, min: 0 },
         arrivalDate: { type: Date, required: true },
         leaveDate: { type: Date, required: true },
@@ -41,6 +40,18 @@ const bookParkingService = {
     async getBookParkingById(id) {
         return await BookParking.findById(id).populate(["user", "businessRegisterPlace", "parkingSpace", "vehicle"]);
     },
+    async getBookParkingByIdLogin(id) {
+        return await BookParking.find({ user: id }).populate(["user", "businessRegisterPlace", "parkingSpace", "vehicle"]);
+    },
+    async getBookParkingByIdLoginPlaceOwner(id) {
+        return await BookParking.find()
+            .populate({
+                path: "businessRegisterPlace",
+                match: { user: id }, // Filters businessRegisterPlace by user ID
+            })
+            .populate(["user", "businessRegisterPlace", "parkingSpace", "vehicle"]);
+    },
+
     async updateBookParking(id, data) {
         return await BookParking.findByIdAndUpdate(id, data, { new: true }).populate([
             "user",
@@ -63,7 +74,12 @@ const bookParkingController = {
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
         try {
-            const bookParking = await bookParkingService.createBookParking(req.body);
+            const user = req.user._id
+            const data = {
+                ...req.body,
+                user
+            }
+            const bookParking = await bookParkingService.createBookParking(data);
             res.status(201).json(bookParking);
         } catch (error) {
             res.status(400).json({ error: error.message });
@@ -78,6 +94,32 @@ const bookParkingController = {
             res.status(500).json({ error: error.message });
         }
     },
+
+
+
+    async getBookParkingByUserId(req, res) {
+        try {
+            const user = req.user._id
+            const bookParkings = await bookParkingService.getBookParkingByIdLogin(user)
+            console.log("🚀 ~ getBookParkingByUserId ~ bookParkings:", bookParkings)
+            res.status(200).json(bookParkings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
+    async getBookParkingByplaceOwnerUserId(req, res) {
+        try {
+            const user = req.user._id
+            console.log("🚀 ~ getBookParkingByplaceOwnerUserId ~ user:", user)
+            const bookParkings = await bookParkingService.getBookParkingByIdLoginPlaceOwner(user)
+            console.log("🚀 ~ getBookParkingByUserId ~ bookParkings:", bookParkings)
+            res.status(200).json(bookParkings);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+
 
     async getBookParkingById(req, res) {
         try {
@@ -119,11 +161,10 @@ const bookParkingController = {
 router.post(
     "/",
     [
-        check("user").isMongoId().withMessage("Valid User ID is required"),
         check("businessRegisterPlace").isMongoId().withMessage("Valid Business Register Place ID is required"),
         check("parkingSpace").isMongoId().withMessage("Valid Parking Space ID is required"),
         check("vehicle").isMongoId().withMessage("Valid Vehicle ID is required"),
-        check("placeNo").notEmpty().withMessage("Place number is required"),
+
         check("amt").isFloat({ min: 0 }).withMessage("Amount must be a positive number"),
         check("arrivalDate").isISO8601().withMessage("Valid arrival date is required"),
         check("leaveDate").isISO8601().withMessage("Valid leave date is required"),
@@ -136,6 +177,10 @@ router.post(
 );
 
 router.get("/", bookParkingController.getAllBookParkings);
+
+router.get("/loginuser", bookParkingController.getBookParkingByUserId);
+
+router.get("/placeowner", bookParkingController.getBookParkingByplaceOwnerUserId);
 router.get("/:id", bookParkingController.getBookParkingById);
 
 router.put(
